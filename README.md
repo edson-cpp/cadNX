@@ -21,3 +21,6 @@ Microsoft MSXML						3.0 4.0 5.0 6.0
 Microsoft Internet Explorer						9.11.17134.0
 Microsoft .NET Framework						4.0.30319.42000
 Operating System						10.0.17134
+
+Módulos necessários:
+	pyodbc
