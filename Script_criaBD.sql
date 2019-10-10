@@ -100,34 +100,30 @@ GO
 
 
 USE [cadNX]
-GO
-
-/****** Object:  Table [dbo].[contas]    Script Date: 10/9/2019 12:15:30 AM ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE TABLE [dbo].[contas](
-	[id] [int] IDENTITY(1,1) NOT NULL,
-	[descricao] [varchar](50) NOT NULL,
-	[agencia] [varchar](10) NOT NULL,
-	[numero] [varchar](20) NOT NULL
-) ON [PRIMARY]
-GO
-
+IF EXISTS(SELECT * FROM SYS.SYSUSERS WHERE NAME = 'UNX')
+	DROP USER UNX
+IF EXISTS(SELECT * FROM SYS.SYSLOGINS WHERE NAME = 'UNX')
+	DROP LOGIN UNX
+CREATE LOGIN UNX WITH PASSWORD = '1234'
+CREATE USER UNX FROM LOGIN UNX
+GRANT CREATE TABLE ON DATABASE :: cadNX TO UNX
+GRANT SELECT ON SCHEMA :: dbo TO UNX
+GRANT INSERT ON SCHEMA :: dbo TO UNX
+GRANT DELETE ON SCHEMA :: dbo TO UNX
+GRANT UPDATE ON SCHEMA :: dbo TO UNX
+EXEC SP_ADDROLEMEMBER db_backupoperator, UNX
+EXEC SP_ADDROLEMEMBER db_OWNER, UNX
 
 USE [cadNX]
 GO
 
-/****** Object:  Table [dbo].[clientes]    Script Date: 10/9/2019 12:15:22 AM ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
 
+/****** Object:  Table [dbo].[clientes]    Script Date: 10/9/2019 12:15:22 AM ******/
 CREATE TABLE [dbo].[clientes](
 	[id] [int] IDENTITY(1,1) NOT NULL,
 	[nome] [varchar](50) NULL,
@@ -147,20 +143,65 @@ CREATE TABLE [dbo].[clientes](
 ) ON [PRIMARY]
 GO
 
-USE [cadNX]
+/****** Object:  Table [dbo].[contas]    Script Date: 10/9/2019 12:15:30 AM ******/
+CREATE TABLE [dbo].[contas](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[descricao] [varchar](50) NOT NULL,
+	[agencia] [varchar](10) NOT NULL,
+	[numero] [varchar](20) NOT NULL,
+ CONSTRAINT [PK_contas] PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
 GO
 
 /****** Object:  Table [dbo].[produtos]    Script Date: 10/9/2019 12:18:21 AM ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
 CREATE TABLE [dbo].[produtos](
 	[id] [int] IDENTITY(1,1) NOT NULL,
 	[descricao] [varchar](50) NOT NULL,
 	[unidade] [varchar](10) NULL,
-	[preco] [numeric](10, 2) NULL
+	[preco] [numeric](10, 2) NULL,
+ CONSTRAINT [PK_produtos] PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+/****** Object:  Table [dbo].[vendas]    Script Date: 10/9/2019 5:50:47 PM ******/
+CREATE TABLE [dbo].[vendas](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[id_clientes] [int] NULL,
+	[nome_clientes] [varchar](50) NULL,
+	[dataven] [datetime] NULL,
+	[totalven] [numeric](10, 2) NULL,
+ CONSTRAINT [PK_vendas] PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[vendas]  WITH CHECK ADD  CONSTRAINT [FK_vendas_clientes] FOREIGN KEY([id_clientes])
+REFERENCES [dbo].[clientes] ([id])
+GO
+
+ALTER TABLE [dbo].[vendas] CHECK CONSTRAINT [FK_vendas_clientes]
+GO
+
+/****** Object:  Table [dbo].[proven]    Script Date: 10/9/2019 5:51:20 PM ******/
+CREATE TABLE [dbo].[proven](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[id_vendas] [int] NULL,
+	[id_produtos] [int] NULL,
+	[descricao_produtos] [varchar](50) NULL,
+	[preco] [numeric](10, 2) NULL,
+	[qtde] [numeric](10, 2) NULL,
+	[total_item] [numeric](10, 2) NULL,
+ CONSTRAINT [PK_proven] PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO

@@ -2,6 +2,7 @@ from uteis import menuPrin
 from cadastros.cadcli import CadClientes
 from cadastros.cadpro import CadProdutos
 from cadastros.cadcont import CadContas
+from vendas.venda import Vendas
 
 
 while True:
@@ -12,7 +13,7 @@ while True:
     except KeyboardInterrupt:
         continue
     except (ValueError, TypeError):
-        print('Tipo de dado incorreto, por favor selecione um número de 1 a 4.')
+        print('Tipo de dado incorreto, por favor selecione uma opção do menu.')
         continue
     except Exception as erro:
         print(f'Ocorreu um erro ao selecionar a opção, por favor tente novamente.')
@@ -27,7 +28,10 @@ while True:
         cadcont = CadContas()
         cadcont.cad_contas()
     elif op == 4:
+        ven = Vendas()
+        ven.venda()
+    elif op == 5:
         break
     else:
-        print('Opção inválida, por favor selecione um número de 1 a 4.')
+        print('Opção inválida, por favor selecione uma opção do menu.')
         continue

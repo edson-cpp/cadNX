@@ -3,8 +3,8 @@ def conectar():
 
     server = 'localhost\DEV'
     database = 'cadNX'
-    username = 'sa'
-    password = '4wu4mTd2W'
+    username = 'UNX'
+    password = '1234'
     try:
         conn = pyodbc.connect('DRIVER={SQL Server};SERVER=' + server +
                               ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)

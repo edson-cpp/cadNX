@@ -1,4 +1,4 @@
-from uteis import menuCad, campoInt, campoStr
+from uteis import menuCad, campoInt, campoStr, exportarArquivoTexto
 from acesso_bd import conectar
 import os.path
 
@@ -108,8 +108,12 @@ class CadClientes:
             print(f'Ocorreu um erro ao inserir, por favor tente novamente.')
 
     def alterar(self):
-        id = campoInt('Código: ')
-        reg = self.listarRegistros(id)
+        while True:
+            id = campoInt('Código [0 para listar]: ')
+            reg = self.listarRegistros(id)
+            if id != 0:
+                break
+
         if reg:
             try:
                 nome = campoStr('Nome ', 50, True, 'Nome', reg['Nome'])
@@ -137,8 +141,12 @@ class CadClientes:
                     print(f'Ocorreu um erro ao alterar, por favor tente novamente.')
 
     def excluir(self):
-        id = campoInt('Código: ')
-        reg = self.listarRegistros(id)
+        while True:
+            id = campoInt('Código [0 para listar]: ')
+            reg = self.listarRegistros(id)
+            if id != 0:
+                break
+
         if reg:
             try:
                 while True:
@@ -169,31 +177,5 @@ class CadClientes:
         self.listarRegistros()
 
     def exportar(self):
-        id = campoInt('Código [0 = Todos]: ')
-        reg = self.listarRegistros(id, False)
-        if reg:
-            arq = campoStr('Informe o nome do arquivo onde serão salvos os dados: ', 50)
-            while True:
-                dir = campoStr('Informe o caminho completo do arquivo [C = Cancelar]: ', 100)
-                if dir in 'Cc' or os.path.exists(dir):
-                    break
-                else:
-                    print('Diretório inexistente!')
-            if dir not in 'Cc':
-                try:
-                    dir = dir.replace('\\', '/')
-                    if dir[-1:] != '/':
-                        dir += '/'
-                    if arq[-4:] != '.txt':
-                        arq += '.txt'
-                    a = open(dir + arq, 'w')
-                    conteudo = ''
-                    for i in reg:
-                        conteudo += str(i) + '\n'
-                    a.write(conteudo)
-                    a.close()
-                    print('-' * 40)
-                    print(f'Registro exportado com sucesso.')
-                    print('-' * 40)
-                except Exception as erro:
-                    print(f'Ocorreu um erro ao exportar os dados, por favor tente novamente.')
+        exportarArquivoTexto(self, 'Cliente')
+        return
